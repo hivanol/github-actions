@@ -49,7 +49,7 @@ jobs:
           name: dist-files
           path: dist
       - name: find a file
-        run: my_dist_files=$(ls -laht dist) && echo "my_dist_files=$my_dist_files" >> $GITHUB_OUTPUT
+        run: echo "my_dist_files=mops" >> $GITHUB_OUTPUT
         id: envvar
   deploy:
     needs: build
