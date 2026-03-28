@@ -1,7 +1,8 @@
 name: test-project
 on:
-  - push
-  - workflow_dispatch
+  push:
+    branches:
+      - main
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -12,13 +13,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: my-cache-${{ hashFiles('**/package-lock.json') }}
       - name: install deps
         run: npm ci
       - name: Run tests
         run: npm test
-  deploy:
+  build:
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      dist-files: ${{ steps.envvar.outputs.my_dist_files }}
     steps:
       - name: get code
         uses: actions/checkout@v3
@@ -26,9 +34,32 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: my-cache-${{ hashFiles('**/package-lock.json') }}
       - name: install deps
         run: npm ci
       - name: Build
         run: npm run build
-      - name: deploy
-        run: echo "Deploying..."
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-files
+          path: dist
+      - name: find a file
+        run: my_dist_files=$(ls -laht dist) && echo "my_dist_files=$my_dist_files" >> $GITHUB_OUTPUT
+        id: envvar
+    deploy:
+      needs: build
+      runs-on: ubuntu-latest
+      steps:
+        - name: check vars
+          run: echo "${{ needs.build.outputs.dist-files }}"
+        - name: download artifact
+          uses: actions/download-artifact@v3
+          with:
+            name: dist-files
+        - name: Deploy
+          run: ls -laht
