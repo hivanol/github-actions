@@ -51,15 +51,15 @@ jobs:
       - name: find a file
         run: my_dist_files=$(ls -laht dist) && echo "my_dist_files=$my_dist_files" >> $GITHUB_OUTPUT
         id: envvar
-    deploy:
-      needs: build
-      runs-on: ubuntu-latest
-      steps:
-        - name: check vars
-          run: echo "${{ needs.build.outputs.dist-files }}"
-        - name: download artifact
-          uses: actions/download-artifact@v3
-          with:
-            name: dist-files
-        - name: Deploy
-          run: ls -laht
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: check vars
+        run: echo "${{ needs.build.outputs.dist-files }}"
+      - name: download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-files
+      - name: Deploy
+        run: ls -laht
