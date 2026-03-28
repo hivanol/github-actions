@@ -1,0 +1,10 @@
+name: show issue event
+on: 
+  issues:
+    types: [opened, edited, deleted, closed, reopened, assigned, unassigned, labeled, unlabeled, locked, unlocked, transferred, milestoned, demilestoned]
+jobs:
+  show-event:
+    runs-on: ubuntu-latest
+    steps:
+      - name: show github context 
+        run: echo  ${{ toJSON(github.event) }}
