@@ -4,7 +4,7 @@ on:
     inputs:
       name:
         description: 'Name of the person to greet'
-        required: true
+        required: false
         default: 'World'
     outputs:
       job_result_name: ${{ jobs.test.outputs.result_name }}
