@@ -1,0 +1,11 @@
+name: reuse
+on: workflow_dispatch
+jobs:
+  reuse:
+    uses: ./.github/workflows/test.yaml
+  show_content:
+    needs: reuse
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show content
+        run: echo "Hello ${{ needs.reuse.outputs.job_result_name }}"

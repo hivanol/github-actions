@@ -1,19 +1,20 @@
 name: test syn
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       name:
         description: 'Name of the person to greet'
         required: true
         default: 'World'
-    secrets:
-      pass:
-        required: true
-        description: 'A secret value to pass to the workflow'
+    outputs:
+      job_result_name: ${{ jobs.test.outputs.result_name }}
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    outputs:
+      result_name: ${{ steps.result_name.outputs.qwe }}
     steps:
       - name: SHow name
-        run: echo inputs.name
+        id: result_name
+        run: echo qwe=${{ inputs.name }}>> $GITHUB_OUTPUT
