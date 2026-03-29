@@ -13,8 +13,11 @@ jobs:
         uses: ./.github/actions/cache-deps
         with:
           caching: 'false'
+        id: load-deps
       - name: Lint code
         run: npm run lint
+      - name: Show cache status
+        run: echo "Cache hit: ${{ steps.load-deps.outputs.cache-hit }}"
   test:
     runs-on: ubuntu-latest
     steps:
